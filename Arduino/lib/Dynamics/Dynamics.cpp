@@ -45,5 +45,5 @@ void Dynamics::eulerXYZ2T(double homo_trans[][4], double X, double Y, double Z, 
     }
 
 void Dynamics::forwardKin(double joints[4], double cart_pos[4]){
-    /*Insert denavit hartenberg params*/
+    /*Insert david hartenberg params*/
 }

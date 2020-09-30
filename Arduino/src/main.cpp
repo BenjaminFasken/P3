@@ -15,7 +15,7 @@ void setup()
 void loop()
 {
   double joints[4] = {1,1,1,1};
-  double x = 1; double y = 1; double z = 1; double pitch = 1;
+  double x, y, z, pitch = 1;
   auto dyna = Dynamics();
   dyna.getInvKinJoints( joints,  x,  y,  z,  pitch);
 
