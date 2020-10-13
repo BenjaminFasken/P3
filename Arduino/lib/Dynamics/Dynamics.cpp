@@ -45,5 +45,21 @@ void Dynamics::eulerXYZ2T(double homo_trans[][4], double X, double Y, double Z, 
     }
 
 void Dynamics::forwardKin(double joints[4], double cart_pos[4]){
-    /*Insert denavit hartenberg params*/
+    double theta_1 = joints[0], theta_2 = joints[1], theta_3 = joints[2], theta_4 = joints[3];
+    /*      David hartenberg params
+    *   Joint   A       α       D       θ
+    *   1       0       0       d1      θ1
+    *   2       0       90      0       θ2
+    *   3       d2      0       0       θ3
+    *   4       d3      0       0       θ4
+    */
+    double T[4][4] = {
+        {cos(theta_1)*cos(theta_2)*(cos(theta_3)*cos(theta_4) - sin(theta_3)*sin(theta_4)) - cos(theta_1)*sin(theta_2)*(sin(theta_3)*cos(theta_4) + cos(theta_3)*sin(theta_4)), cos(theta_1)*cos(theta_2)*(-cos(theta_3)*sin(theta_4) - sin(theta_3)*cos(theta_4)) - cos(theta_1)*sin(theta_2)*(cos(theta_3)*cos(theta_4) - sin(theta_3)*sin(theta_4)), sin(theta_1), cos(theta_1)*cos(theta_2)*(cos(theta_3)*d__3 + d__2) - cos(theta_1)*sin(theta_2)*sin(theta_3)*d__3}, 
+        {sin(theta_1)*cos(theta_2)*(cos(theta_3)*cos(theta_4) - sin(theta_3)*sin(theta_4)) - sin(theta_1)*sin(theta_2)*(sin(theta_3)*cos(theta_4) + cos(theta_3)*sin(theta_4)), sin(theta_1)*cos(theta_2)*(-cos(theta_3)*sin(theta_4) - sin(theta_3)*cos(theta_4)) - sin(theta_1)*sin(theta_2)*(cos(theta_3)*cos(theta_4) - sin(theta_3)*sin(theta_4)), -cos(theta_1), sin(theta_1)*cos(theta_2)*(cos(theta_3)*d__3 + d__2) - sin(theta_1)*sin(theta_2)*sin(theta_3)*d__3},
+        {sin(theta_2)*(cos(theta_3)*cos(theta_4) - sin(theta_3)*sin(theta_4)) + cos(theta_2)*(sin(theta_3)*cos(theta_4) + cos(theta_3)*sin(theta_4)), sin(theta_2)*(-cos(theta_3)*sin(theta_4) - sin(theta_3)*cos(theta_4)) + cos(theta_2)*(cos(theta_3)*cos(theta_4) - sin(theta_3)*sin(theta_4)), 0, (cos(theta_3)*d__3 + d__2)*sin(theta_2) + sin(theta_3)*d__3*cos(theta_2) + d__1}, 
+        {0, 0, 0, 1}
+        };
+    
+    cart_pos = T;
+
 }
