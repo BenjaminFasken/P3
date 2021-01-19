@@ -1,6 +1,7 @@
 from math import sin, cos, atan
 from numpy import array
 
+"I KODEN BRUGER VI DEN ANDEN: matrix_op_2"
 
 def update_matrices(theta, vel):
     theta1, theta2, theta3, theta4, theta5 = theta[0], theta[1], theta[2], theta[3], theta[4]

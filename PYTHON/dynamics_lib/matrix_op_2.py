@@ -16,6 +16,7 @@ def update_matrices(theta, vel):
     G_4 = ((0.161123794579980*cos(theta4) + (0.0339499531432200*cos(theta5) - 0.0000950710435800000*sin(theta5))*sin(theta4))*cos(theta3) + sin(theta3)*(0.0339499531432200*cos(theta5) - 0.0000950710435800000*sin(theta5))*cos(theta4) - 0.161123794579980*sin(theta4)*sin(theta3))*cos(theta2) + (sin(theta2)*(0.0339499531432200*cos(theta5) - 0.0000950710435800000*sin(theta5))*cos(theta4) - 0.161123794579980*sin(theta4)*sin(theta2))*cos(theta3) - 0.161123794579980*cos(theta4)*sin(theta3)*sin(theta2) + (-0.0339499531432200*cos(theta5) + 0.0000950710435800000*sin(theta5))*sin(theta4)*sin(theta3)*sin(theta2)
     G_5 = (-0.0000950710435800000*sin(theta2)*sin(theta3)*cos(theta5) - 0.0339499531432200*sin(theta2)*sin(theta3)*sin(theta5))*cos(theta4) + ((0.0000950710435800000*cos(theta5) + 0.0339499531432200*sin(theta5))*cos(theta4)*cos(theta3) - 0.0000950710435800000*cos(theta5)*sin(theta3)*sin(theta4) - 0.0339499531432200*sin(theta3)*sin(theta5)*sin(theta4))*cos(theta2) + (-0.0000950710435800000*sin(theta4)*sin(theta2)*cos(theta5) - 0.0339499531432200*sin(theta2)*sin(theta4)*sin(theta5))*cos(theta3)
 
+    "laver diagonal matrix af M værdierne"
     M = np.diag([M_11, M_22, M_33, M_44, M_55])
     V = np.array([0, 0, 0, 0, 0])
     G = np.array([G_1, G_2, G_3, G_4, G_5])

@@ -4,6 +4,7 @@ from dynamics_lib import crc
 import dynamics_lib as dyn
 import numpy
 
+"Specificerer max pwm"
 PWM_LIMIT = 650
 
 # Motor constants
@@ -11,31 +12,37 @@ PWM_LIMIT = 650
 # MX_64 = [155, 122]
 # MX_28 = [480, 157]
 
-
+#Motor constants
 MX_106 = [171, 76]
 MX_64 = [122, 131]
 MX_28 = [157, 350]
 
 
 def send_all_PWM(serial, pwm):
+    "Vi starter med et template til vores WRITE pwm instruction"
     write_dynamixel_data = [0xFF, 0xFF, 0xFD, 0x00, 0xFE, 0x16, 0x00, 0x83, 0x64, 0x00, 0x02, 0x00, 0x01, 0x32, 0x00,
                             0x02, 0x32, 0x00, 0x03, 0x32, 0x00, 0x04, 0x32, 0x00, 0x05, 0x32, 0x00, 0x00, 0x00]
 
+    "hvis PWM er over grænsen, så sættes PWM til PWM_LIMIT"
     for i in range(len(pwm)):
         if pwm[i] > PWM_LIMIT:
             pwm[i] = PWM_LIMIT
         elif pwm[i] < -PWM_LIMIT:
             pwm[i] = -PWM_LIMIT
 
+    "PWM konverteres til little endian"
     a = (pwm & 0xFF)
     b = (pwm & 0xFF00) >> 8
 
+    "kopierer write_dynamixel_data til variablen 'send', og indsætter pwm værdier i de relevante pladser"
     send = write_dynamixel_data
     for i in range(5):
         send[13 + i * 3] = a[i]
         send[14 + i * 3] = b[i]
 
+    "udregner og indsætter crc på de sidste 2 pladser"
     send[-2], send[-1] = crc.calc_crc(send[:-2])
+    "send that bitch to serial"
     serial.write(send)
 
 

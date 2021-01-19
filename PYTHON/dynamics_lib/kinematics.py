@@ -2,19 +2,21 @@ import numpy as np
 from math import sin, cos, pi, atan2, sqrt, acos
 
 pi_2 = pi / 2
+"Vores længder for hvert led"
 d_1 = 0.24
 d_2 = 0.22
 d_3 = 0.145
 d_4 = 0.15
 
-
+"DH algo"
 def dh(a, alpha, d, theta):
     return np.array([[cos(theta), -sin(theta), 0, a],
                      [sin(theta) * cos(alpha), cos(theta) * cos(alpha), -sin(alpha), -sin(alpha) * d],
                      [sin(theta) * sin(alpha), cos(theta) * sin(alpha), cos(alpha), cos(alpha) * d],
                      [0, 0, 0, 1]])
 
-
+"udregner forward kin mht. vores dh parametre. Vi tager ikke theta5 med, " \
+"fordi den ikke gør noget ved end effektorens xyz position"
 def fwd_kin(theta):
     h_1 = dh(0, 0, d_1, theta[0])
     h_2 = dh(0, pi_2, 0, theta[1])
@@ -23,12 +25,13 @@ def fwd_kin(theta):
     h_5 = dh(d_4, 0, 0, 0)
     return h_1.dot(h_2).dot(h_3).dot(h_4).dot(h_5)
 
-
+"Udregner x,y,z,r,p,y ud fra theta værdier"
 def check_pos(theta):
     h = fwd_kin(theta)
     return cart_pos(h)
 
-
+"""invers kinematik, hvor cart_pos(x,y,z,r,p,y) selvfølgelig er parametre, men også reference-theta værdier,
+så vi udregner løsningen, som er tættest på referenceværdierne"""
 def inv_kin(cart_pos, theta):
     target_0W = eulerZYX2T(cart_pos)
     T = target_0W.dot(dh(-d_4, 0, 0, 0))
@@ -36,6 +39,8 @@ def inv_kin(cart_pos, theta):
     y = T[1, 3]
     z = T[2, 3]
 
+    "Formelerne står i rapporten, men fremgangsmåden er, at vi udregner theta, udregner de andre løsninger," \
+    "hvor derefter vi tager den løsning med mindst afstand fra reference-theta"
     # Theta 1
     theta1 = atan2(y, x)
     t1 = np.array([theta1, theta1-pi, theta1+pi])
@@ -90,6 +95,7 @@ def eulerZYX2T(pos):
                      [0, 0, 0, 1]])
 
 
+"udregning af x,y,z,r,p,y ud fra homogeneous transform"
 def cart_pos(T):
     X = T[0, 3]
     Y = T[1, 3]

@@ -1,9 +1,10 @@
+"validering af crc. Tager data foruden de sidste 2 bytes, og udregner crc-16 på dem"
 def validate_crc(data):
     arr = data[:-2]
     a, b = calc_crc(arr)
     return a == data[-2] and b == data[-1]
 
-
+"I burde ikke skulle kunne dette :)"
 def calc_crc(data):
     crc_accum = 0
     crc_table = [0x0000, 0x8005, 0x800F, 0x000A, 0x801B, 0x001E, 0x0014, 0x8011,
