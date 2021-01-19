@@ -1,12 +1,7 @@
-from dataclasses import dataclass
+a = "s"
 
-
-@dataclass
-class Intruction:
-    command: chr
-    data: None
-
-
-p = Intruction('w', [1, 1, 1, 1])
-
-print(p)
+while True:
+    try:
+        b = int(a)
+    except ValueError:
+        raise

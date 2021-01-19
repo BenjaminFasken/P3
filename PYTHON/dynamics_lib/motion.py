@@ -1,4 +1,5 @@
-from dynamics_lib import crc
+from dynamics_lib import crc, reset_torque
+from math import pi
 
 
 def get_all_motion(serial):
@@ -15,13 +16,14 @@ def get_all_motion(serial):
         except:
             print("\nStack trace: ", a)
             print("\nError. Cannot find motor {}. Please reconnect.".format(i+1))
-            return 1, 1
+            exit(42)
+            raise
         if not is_valid:
             print("\nNot valid checksum. Returning")
+            reset_torque(serial)
             return 0, 0
-    # print(dynamixel_motion_data)
-    # int_data = list(dynamixel_motion_data)
-    theta = [-3.14159625, -1.5707, -3.14159, -3.14159265, -1.5707]
+        
+    theta = [-pi, -1.5707, -pi, -pi, -1.5707]
     vel = [0.0, 0.0, 0.0, 0.0, 0.0]
     for i in range(5):
         theta[i] += int.from_bytes(dynamixel_motion_data[i * 19 + 13:i * 19 + 17], 'little', signed=True) * 0.001536

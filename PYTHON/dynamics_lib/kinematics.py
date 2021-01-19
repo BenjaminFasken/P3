@@ -30,7 +30,6 @@ def check_pos(theta):
 
 
 def inv_kin(cart_pos, theta):
-    # target_0W = cart_pos
     target_0W = eulerZYX2T(cart_pos)
     T = target_0W.dot(dh(-d_4, 0, 0, 0))
     x = T[0, 3]
