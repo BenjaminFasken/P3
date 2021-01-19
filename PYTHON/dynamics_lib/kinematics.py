@@ -30,12 +30,19 @@ def check_pos(theta):
 
 
 def inv_kin(cart_pos, theta):
+    # target_0W = cart_pos
     target_0W = eulerZYX2T(cart_pos)
     T = target_0W.dot(dh(-d_4, 0, 0, 0))
     x = T[0, 3]
     y = T[1, 3]
     z = T[2, 3]
 
+    # Theta 1
+    theta1 = atan2(y, x)
+    t1 = np.array([theta1, theta1-pi, theta1+pi])
+    theta1 = t1.flat[np.abs(t1 - theta[0]).argmin()]
+
+    #Theta 2
     r = sqrt(x ** 2 + y ** 2 + (d_1 - z) ** 2)
     if (d_2 ** 2 + r ** 2 - d_3 ** 2) / (2 * d_2 * r) > 1:
         beta = 0
@@ -45,13 +52,10 @@ def inv_kin(cart_pos, theta):
         beta = acos((d_2 ** 2 + r ** 2 - d_3 ** 2) / (2 * d_2 * r))
 
     theta2 = atan2((z - d_1), sqrt(x ** 2 + y ** 2))
-
-    t2 = np.array([theta2 + beta, theta2 - beta, pi - theta2 + beta, pi - theta2 - beta])
     t2 = np.array([theta2 + beta, theta2 - beta, pi - theta2 + beta, pi - theta2 - beta])
     theta2 = t2.flat[np.abs(t2 - theta[1]).argmin()]
-    # if abs(theta2 - theta[1]) > abs(3.14159 - theta2 - theta[1]):
-    #     theta2 = 3.14159 - theta2
 
+    # Theta 3
     if (d_2 ** 2 + d_3 ** 2 - r ** 2) / (2 * d_2 * d_3) > 1:
         gamma = 0
     elif (d_2 ** 2 + d_3 ** 2 - r ** 2) / (2 * d_2 * d_3) < -1:
@@ -62,26 +66,20 @@ def inv_kin(cart_pos, theta):
     if abs(theta3 - theta[2]) > abs(theta3 + theta[2]):
         theta3 = -theta3
 
+    # Theta 4
+    h_1 = dh(0, 0, d_1, theta1)
+    h_2 = dh(0, pi_2, 0, theta2)
+    h_3 = dh(d_2, 0, 0, theta3)
+    t03 = h_1.dot(h_2).dot(h_3)
 
-    # theta1 = atan2(y, x)
-    # h_1 = dh(0, 0, d_1, theta1)
-    # h_2 = dh(0, pi_2, 0, theta2)
-    # h_3 = dh(d_2, 0, 0, theta3)
-    # t03 = h_1.dot(h_2).dot(h_3)
-    #
-    # t35 = (np.linalg.inv(t03)).dot(target_0W)
-    #
-    #
-    # zeta = pi - abs(beta) - (pi - abs(theta3))
-    # theta4 = atan2(t35[1, 0], t35[0, 0])
-    # t4 = np.array([theta4, -theta4])
-    #
-    # theta4 = t4.flat[np.abs(t4 - theta[3]).argmin()]
+    t35 = (np.linalg.inv(t03)).dot(target_0W)
 
-    # print("\r {}\t{}\t{}".format(th1_1, th1_2, th1_3), end="")
-    # print("\r {}\t{}\t{}\t{}\t{}".format(theta[3], np.array([theta[0], theta2, theta3, theta4, theta[4]])[3], beta, gamma, zeta), end="")
+    theta4 = atan2(t35[1, 0], t35[0, 0])
+    t4 = np.array([theta4, -theta4])
+    theta4 = t4.flat[np.abs(t4 - theta[3]).argmin()]
 
-    return np.array([theta[0], theta2, theta3, theta[3], theta[4]])
+    return np.array([theta1, theta2, theta3, theta4, theta[4]])
+
 
 def eulerZYX2T(pos):
     X, Y, Z, rotX, rotY, rotZ = pos[0], pos[1], pos[2], pos[3], pos[4], pos[5]

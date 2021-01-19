@@ -1,0 +1,16 @@
+How to make a run script:
+1: Go to theta
+2: wait seconds
+3: REMEMBER e1 line at the end
+ex:
+    g[-pi / 2, pi / 2, 0, 0, 0]
+    w0.7
+
+run:
+g[-1.7, 1.7, 0, 0, 0]
+w4
+g[0, 2.4,0.7, 0.7, 1.5]
+w6
+g[-0.6,1.5,1.5,1.5, 1.5]
+w4
+e1

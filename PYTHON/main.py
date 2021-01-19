@@ -1,6 +1,7 @@
 from dynamics_lib import matrix_op_2, pwm_lib, motion, reset_torque, reset, kinematics
 import dynamics_lib as dyn
 import numpy as np
+
 np.set_printoptions(precision=3, suppress=True)
 import serial
 import time
@@ -18,6 +19,7 @@ while dyn.goal_theta is None:
 goal_theta = np.zeros(5)
 goal_vel = np.zeros(5)
 goal_acc = np.zeros(5)
+pose_1, pose_2, pose_3 = True, False, False
 
 pi = 3.14159565357989
 tot, tick_1, tick_4 = 0, -16, -16
@@ -30,7 +32,20 @@ while True:
         kp = eval(file.readline())
         kv = eval(file.readline())
         file.close()
-        # goal_theta = np.array([0, pi / 2, pi / 2, 0, .01]) if goal_theta[4] == 0 else np.array([0, pi / 2, -pi / 2, 0, 0])
+        #
+        # if pose_1:
+        #     goal_theta = np.array([-pi / 2, pi / 2, 0, 0, 0])
+        #     pose_1 = False
+        #     pose_2 = True
+        # elif pose_2:
+        #     goal_theta = np.array([0, 3*pi / 4, pi / 4, pi / 4, pi / 2])
+        #     pose_2 = False
+        #     pose_3 = True
+        # elif pose_3:
+        #     goal_theta = np.array([-0.6,pi/2,pi/2,pi/2, pi])
+        #     pose_3 = False
+        #     pose_1 = True
+        # # goal_theta = np.array([0, pi / 2, pi / 2, 0, .01]) if goal_theta[4] == 0 else np.array([0, pi / 2, -pi / 2, 0, 0])
 
     serial_bot.flushInput()
     theta, vel = motion.get_all_motion(serial_bot)
@@ -41,6 +56,7 @@ while True:
         break
 
     M, V, G = matrix_op_2.update_matrices(theta, vel)
+    # error_theta = goal_theta - theta
     error_theta = dyn.goal_theta - theta
     error_vel = goal_vel - vel
 
@@ -65,9 +81,13 @@ while True:
         print("pwm:                     {}".format(pwm) + "\n")
 
     print(
-        "\rsending pwm. Tick time: {:10.4f}\tTotal time: {:10.4f}".format(time.time() - tick_time, tot := time.time() - total_time),
+        "\rsending pwm. Tick time: {:10.4f}\tTotal time: {:10.4f}".format(time.time() - tick_time,
+                                                                          tot := time.time() - total_time),
         end='')
 
     # file = open("data.csv", "a")
     # file.write("\n{:10.5f}\t{:10.5f}".format(tot, theta[2]))
     # file.close()
+
+    # def run_script(file_name):
+    #

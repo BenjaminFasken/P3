@@ -5,7 +5,7 @@ import dynamics_lib as dyn
 import numpy
 
 
-PWM_LIMIT = 650
+PWM_LIMIT = 350
 
 # Motor constants
 # MX_106 = [76, 171]
